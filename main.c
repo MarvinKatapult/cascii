@@ -1,5 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@ Pixel * preloadImage(unsigned char * img, int w, int h, int channels) {
 	Pixel * ret = calloc(w * h * channels, sizeof(Pixel));
 	for (int y = 0; y < h; y++) {
 		for (int x = 0; x < w; x++) {
-			const Pixel * new_pix = ret + (y * w + x);
+			Pixel * new_pix = ret + (y * w + x);
 			const unsigned char * old_pix = img + (y * w + x) * channels;
 			new_pix->r = old_pix[0];
 			new_pix->g = old_pix[1];
