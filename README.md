@@ -8,6 +8,10 @@ Currently only for Linux.
 
 Start the build.sh script.
 
+Start cascii with the .png or .jpg. You can optionally provide the sector size for every char to pixel.
+
+# Example
+
 <pre>
               x
              '`]
