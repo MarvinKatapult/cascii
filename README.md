@@ -8,6 +8,8 @@ Currently only for Linux.
 
 Start the build.sh script.
 
+<code>
+
               x
              '`]
              t,b
@@ -37,3 +39,5 @@ Start the build.sh script.
  c,,W\.                ?k,,*
 ,`8|                     _h,1
 Xr.                        ]q
+
+</code>
