@@ -8,8 +8,7 @@ Currently only for Linux.
 
 Start the build.sh script.
 
-'''
-
+<pre>
               x
              '`]
              t,b
@@ -31,7 +30,7 @@ Start the build.sh script.
      I^,,,,,x   l',,,,,c
      m,,,,,#.    L,,,,,`"
     ~,,,,,,Q     [,,,,,,J
-    d,,,,,,r     ",,,,Wa\';
+    d,,,,,,r     ",,,,Wa';
    ],,,,,,,f     .,,,,,B({
    M,,,,,,,u     ",,,,,,'\
   f,,,,,,MJ+     ^ch",,,,,U
@@ -39,5 +38,4 @@ Start the build.sh script.
  c,,W\.                ?k,,*
 ,`8|                     _h,1
 Xr.                        ]q
-
-'''
+</pre>
