@@ -8,7 +8,7 @@ Currently only for Linux.
 
 Start the build.sh script.
 
-<code>
+'''
 
               x
              '`]
@@ -40,4 +40,4 @@ Start the build.sh script.
 ,`8|                     _h,1
 Xr.                        ]q
 
-</code>
+'''
