@@ -1,6 +1,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include <cterm.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +13,12 @@ typedef struct {
 	unsigned char a;
 } Pixel;
 
-#define USED_CHARS  ".`;-'*|><)(][\\/+=#wxlstymjcurvzpfnqkhgedbaOoILTSPCYEJRVEUKGFDXAHQZBNMW"
+typedef struct {
+    unsigned char avg_b;
+    CT_Color color;
+} SectorInfo;
+
+#define USED_CHARS  " .`'^\",:;Iil><~+_-?[]{}1()|\\ftjrxnuvczXYUJCLQ0OZmwqpbkdhao*B$MW&8%#@"
 
 Pixel * preloadImage(unsigned char * img, int w, int h, int channels) {
 	Pixel * ret = calloc(w * h, sizeof(Pixel));
@@ -30,21 +37,27 @@ Pixel * preloadImage(unsigned char * img, int w, int h, int channels) {
 	return ret;
 }
 
-unsigned char getAvgBrightness(Pixel p) {
-    return (p.r + p.g + p.b) / 3;
-}
-
-unsigned char getAvgBrightnessSector(Pixel * start, int w, int size) {
-    int count = 0;
-    int abs_brightness = 0;
+SectorInfo getAvgBrightnessSector(Pixel * start, int w, int size) {
+    unsigned int count = 0;
+    unsigned long avg_r = 0;
+    unsigned long avg_g = 0;
+    unsigned long avg_b = 0;
     for (int y = 0; y < size; y++) {
         for (int x = 0; x < size; x++) {
             const Pixel * p = start + (x + y * w);
-            abs_brightness += getAvgBrightness(*p);
+            avg_r += p->r;
+            avg_g += p->g;
+            avg_b += p->b;
             count++;
         }
     }
-    return abs_brightness / count;
+
+    CT_Color color_ret = CT_White;
+    if (avg_r > avg_g && avg_r > avg_b) color_ret = CT_Red;
+    else if (avg_g > avg_b) color_ret = CT_Green;
+    else color_ret = CT_Blue;
+
+    return (SectorInfo) { (avg_r + avg_b + avg_g / 3) / count, color_ret };
 }
 
 char mapAvgBToChar(unsigned char b) {
@@ -83,9 +96,12 @@ int main(int argc, char * argv[]) {
     const int count_y = h / size;
     for (int y = 0; y < count_y; y++) {
         for (int x = 0; x < count_x; x++) {
-            unsigned char b = getAvgBrightnessSector(pixels + ((x + y * w) * size), w, size);
-            // printf("Avg. B for Sector:X=%d;Y=%d %d\n", x, y, b);
-            printf("%c", mapAvgBToChar(b));
+            SectorInfo info = getAvgBrightnessSector(pixels + ((x + y * w) * size), w, size);
+            char c[2];
+            c[0] = mapAvgBToChar(info.avg_b);
+            c[1] = '\0';
+
+            putStrExt(c, info.color, CT_Black);
         }
         printf("\n");
     }
