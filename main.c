@@ -37,7 +37,7 @@ Pixel * preloadImage(unsigned char * img, int w, int h, int channels) {
 	return ret;
 }
 
-SectorInfo getAvgBrightnessSector(Pixel * start, int w, int size) {
+SectorInfo getAvgBrightnessSector(Pixel * start, int w, int size, bool use_color) {
     unsigned int count = 0;
     unsigned long avg_r = 0;
     unsigned long avg_g = 0;
@@ -53,9 +53,11 @@ SectorInfo getAvgBrightnessSector(Pixel * start, int w, int size) {
     }
 
     CT_Color color_ret = CT_White;
-    if (avg_r > avg_g && avg_r > avg_b) color_ret = CT_Red;
-    else if (avg_g > avg_b) color_ret = CT_Green;
-    else color_ret = CT_Blue;
+    if (use_color) {
+        if (avg_r > avg_g && avg_r > avg_b) color_ret = CT_Red;
+        else if (avg_g > avg_b) color_ret = CT_Green;
+        else if (avg_b != avg_g && avg_b != avg_r ) color_ret = CT_Blue;
+    }
 
     return (SectorInfo) { (avg_r + avg_b + avg_g / 3) / count, color_ret };
 }
@@ -89,17 +91,21 @@ int main(int argc, char * argv[]) {
     stbi_image_free(img);
 
     int size = 8;
+    bool use_color = false;
     if (argc > 2) {
-        size = atoi(argv[2]);    
+        if (strcmp(argv[2], "-c") == 0) {
+            use_color = true;
+        } else size = atoi(argv[2]);    
     }
     const int count_x = w / size;
     const int count_y = h / size;
     for (int y = 0; y < count_y; y++) {
         for (int x = 0; x < count_x; x++) {
-            SectorInfo info = getAvgBrightnessSector(pixels + ((x + y * w) * size), w, size);
-            char c[2];
-            c[0] = mapAvgBToChar(info.avg_b);
-            c[1] = '\0';
+            SectorInfo info = getAvgBrightnessSector(pixels + ((x + y * w) * size), w, size, use_color);
+            char c[2] = {
+                mapAvgBToChar(info.avg_b),
+                '\0',
+            };
 
             putStrExt(c, info.color, CT_Black);
         }
